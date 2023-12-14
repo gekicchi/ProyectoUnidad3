@@ -57,39 +57,51 @@ int main(int argc, char *argv[])
 		{
 			case 1: // colas de espera
 				size = rand()%10000 + 100000;
-				CreateArray(size, electionB);
+				OriginalArray = CreateArray(size, electionB);
 				break;
 				
 			case 2: // trazabilidad de objetos
 				size = rand()%500 + 1000;
 				size *= 15;
-				CreateArray(size, electionB);
+				OriginalArray = CreateArray(size, electionB);
 				break;
 				
 			case 3: // eventos
 				size = rand()%20000 + 60000;
-				CreateArray(size, electionB);
+				OriginalArray = CreateArray(size, electionB);
+				break;
 				
 		}
 		
-		cout << "salio ";
-		SelectionArray.assign(OriginalArray.begin(), OriginalArray.end());
-		BubbleArray.assign(OriginalArray.begin(), OriginalArray.end());
-		InsertionArray.assign(OriginalArray.begin(), OriginalArray.end());
-		ShellArray.assign(OriginalArray.begin(), OriginalArray.end());
-		MergeArray.assign(OriginalArray.begin(), OriginalArray.end());
-		QuickArray.assign(OriginalArray.begin(), OriginalArray.end());
-		HeapArray.assign(OriginalArray.begin(), OriginalArray.end());
-		cout << "eyoo ";
-		
-		times["Selection Sort"] = GetTimeFromAlg(SelectionArray, size, 1);
-		times["Bubble Sort"] = GetTimeFromAlg(BubbleArray, size, 2);
-		times["Insertion Sort"] = GetTimeFromAlg(InsertionArray, size, 3);
-		//times["Shell Sort"] = GetTimeFromAlg(ShellArray, size, 4);
-		times["Merge Sort"] = GetTimeFromAlg(MergeArray, size, 5);
-		times["Quick Sort"] = GetTimeFromAlg(QuickArray, size, 6);
-		times["Heap Sort"] = GetTimeFromAlg(HeapArray, size, 7);
+		if (electionA != 4)
+		{
+			SelectionArray.assign(OriginalArray.begin(), OriginalArray.end());
+			BubbleArray.assign(OriginalArray.begin(), OriginalArray.end());
+			InsertionArray.assign(OriginalArray.begin(), OriginalArray.end());
+			ShellArray.assign(OriginalArray.begin(), OriginalArray.end());
+			MergeArray.assign(OriginalArray.begin(), OriginalArray.end());
+			QuickArray.assign(OriginalArray.begin(), OriginalArray.end());
+			HeapArray.assign(OriginalArray.begin(), OriginalArray.end());
 			
+			times["Selection Sort"] = GetTimeFromAlg(SelectionArray, size, 1);
+			times["Bubble Sort"] = GetTimeFromAlg(BubbleArray, size, 2);
+			times["Insertion Sort"] = GetTimeFromAlg(InsertionArray, size, 3);
+			times["Shell Sort"] = GetTimeFromAlg(ShellArray, size, 4);
+			times["Merge Sort"] = GetTimeFromAlg(MergeArray, size, 5);
+			times["Quick Sort"] = GetTimeFromAlg(QuickArray, size, 6);
+			times["Heap Sort"] = GetTimeFromAlg(HeapArray, size, 7);
+			
+			cout << endl;
+			for (const auto& pair : times)
+			{
+				const string& key = pair.first;
+				double value = pair.second;
+				
+				cout << key << ": " << fixed << value << setprecision(9) << endl;
+			}
+			cout << endl;
+		}
+		
 	} while (electionA != 4);
 	
 	return 0;
@@ -100,7 +112,7 @@ vector<int> CreateArray(int size, int mode)
 	vector<int> OriginalArray;
 	int random;
 	
-	cout << size;
+	cout << "Tamano de Arreglos: " << size << endl;
 	
 	switch (mode)
 	{
@@ -137,7 +149,8 @@ vector<int> CreateArray(int size, int mode)
 			}
 			break;
 	}
-	cout << " damn ";
+	
+	return OriginalArray;
 }
 
 // facilita el cambio de valores dentro de los arreglos
@@ -155,7 +168,6 @@ double GetTimeFromAlg(vector<int>& arr, int size, int option)
 	
 	time(&start);
 	ios_base::sync_with_stdio(false);
-	cout << "buenas";
 	
 	switch (option)
 	{
@@ -188,9 +200,7 @@ double GetTimeFromAlg(vector<int>& arr, int size, int option)
 			break;
 	}
 	
-	cout << "terminamos";
 	time(&end);
-	cout << start << " y " << end << endl;
 	timeTaken = double(end - start);
 	
 	return timeTaken;
@@ -237,7 +247,7 @@ int getGap(int size)
 {
 	int g = 1;
 	
-	while ((3*g)+1 > size)
+	while ((3*g)+1 < size)
 		g = (3 * g) + 1;
 		
 	return g;
@@ -248,7 +258,7 @@ void ShellSort(vector<int>& arr)
 	int size = arr.size();
 	int gap = getGap(size);
 	
-	while (gap > 0)
+	while (gap > 1)
 	{
 		for (int i=gap; i<size-1; i++)
 		{
@@ -271,8 +281,8 @@ void Merge(vector<int>& arr, int left, int right, int mid)
 	int n1 = mid - left + 1;
 	int n2 = right - mid;
 	
-	int arrLeft[n1];
-	int arrRight[n2];
+	vector<int> arrLeft(n1);
+	vector<int> arrRight(n2);
 	
 	for (int i=0; i<n1; i++)
 		arrLeft[i] = arr[left+1];
@@ -326,7 +336,7 @@ int Partition(vector<int>& arr, int low, int high)
 {
 	int pivot = arr[high], i = low - 1;
 	
-	for (int j=low; j<high-1; j++)
+	for (int j=low; j<=high-1; j++)
 	{
 		if (arr[j] <= pivot)
 		{
